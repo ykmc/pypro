@@ -1,0 +1,14 @@
+MANIFEST.in
+README.md
+setup.cfg
+setup.py
+src/pypro/__init__.py
+src/pypro/admin.py
+src/pypro/atcoder.py
+src/pypro/chrome.py
+src/pypro.egg-info/PKG-INFO
+src/pypro.egg-info/SOURCES.txt
+src/pypro.egg-info/dependency_links.txt
+src/pypro.egg-info/entry_points.txt
+src/pypro.egg-info/requires.txt
+src/pypro.egg-info/top_level.txt

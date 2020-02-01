@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "478aad4341189ec0c235bd7f9071384fd0c66902e4d69749b27df32beb6ff717"
+            "sha256": "01f012589ae9445af310396f54cf2879dca88b8939e8f06fdf16a5802ddcfa01"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,10 +16,6 @@
         ]
     },
     "default": {
-        "atcoder-client-tools": {
-            "editable": true,
-            "path": "."
-        },
         "beautifulsoup4": {
             "hashes": [
                 "sha256:05fd825eb01c290877657a56df4c6e4c311b3965bda790c613a3d6fb01a5462a",
@@ -34,6 +30,10 @@
                 "sha256:5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"
             ],
             "version": "==7.0"
+        },
+        "pypro-atcoder": {
+            "editable": true,
+            "path": "."
         },
         "selenium": {
             "hashes": [

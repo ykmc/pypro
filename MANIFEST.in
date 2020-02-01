@@ -1,1 +1,1 @@
-recursive-include src/atcoder/data *
+recursive-include src/pypro_atcoder/data *
