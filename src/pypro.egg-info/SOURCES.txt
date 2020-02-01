@@ -3,8 +3,8 @@ README.md
 setup.cfg
 setup.py
 src/pypro/__init__.py
-src/pypro/admin.py
 src/pypro/atcoder.py
+src/pypro/atcoder_get.py
 src/pypro/chrome.py
 src/pypro.egg-info/PKG-INFO
 src/pypro.egg-info/SOURCES.txt

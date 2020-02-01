@@ -7,7 +7,7 @@ class Chrome:
     
     def __init__(self):
         # データディレクトリへのパス (私のPCでしか動かないけどね)
-        self.path_data_dir = Path("/Users/ykmc/src/github.com/ykmc/pypro/src/pypro/data")
+        self.data_dir_path = Path("/Users/ykmc/src/github.com/ykmc/pypro/src/pypro/data")
         # browser options
         self.options = Options()
         # headless mode
@@ -26,16 +26,35 @@ class Chrome:
 
             # テストケースの取得
             div = soup.find_all("div", class_="part")
+            i_in, i_out = 0,0
             for d in div:
                 if (d.find("h3").text)[:3] == "入力例":
-                    # テストケースを保存
-                    contest_dir = self.path_data_dir / contest
-                    print(contest_dir)
-                    if contest_dir.exists:
-                        print("e")
+                    # サンプルケースを格納するコンテストディレクトリがなければ作成する
+                    contest_dir_path = self.data_dir_path / contest
+                    if not contest_dir_path.exists():
+                        contest_dir_path.mkdir()
+                    
+                    # サンプルケースのナンバリング
+                    i_in += 1
+                    filename = "in_" + str(i_in) + ".txt"
+                    file_path = contest_dir_path / filename
+                    
+                    # サンプルケースの存在確認
+                    if file_path.exists():
+                        print("exists : " + str(file_path))
                     else:
-                        print("not e")
+                        with file_path.open(mode='w') as f:
+                            f.write(d.find("pre").string)
+                
+                if (d.find("h3").text)[:3] == "出力例":
+                    # サンプルケースのナンバリング
+                    i_out += 1
+                    filename = "out_" + str(i_out) + ".txt"
+                    file_path = contest_dir_path / filename
 
-                    #print(d.find("pre").string)
-                    #with p_new.open(mode='w') as f:
-                    #    f.write('line 1\nline 2\nline 3')
+                    # サンプルケースの存在確認
+                    if file_path.exists():
+                        print("exists : " + str(file_path))
+                    else:
+                        with file_path.open(mode='w') as f:
+                            f.write(d.find("pre").string)
