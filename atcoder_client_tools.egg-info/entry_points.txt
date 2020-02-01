@@ -1,3 +1,0 @@
-[console_scripts]
-act = atcoder_client_tools._internal.atcoder.cli:main
-

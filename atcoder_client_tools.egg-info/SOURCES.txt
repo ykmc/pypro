@@ -1,9 +1,0 @@
-README.md
-setup.cfg
-setup.py
-atcoder_client_tools.egg-info/PKG-INFO
-atcoder_client_tools.egg-info/SOURCES.txt
-atcoder_client_tools.egg-info/dependency_links.txt
-atcoder_client_tools.egg-info/entry_points.txt
-atcoder_client_tools.egg-info/requires.txt
-atcoder_client_tools.egg-info/top_level.txt

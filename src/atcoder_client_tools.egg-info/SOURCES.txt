@@ -1,6 +1,8 @@
 README.md
 setup.cfg
 setup.py
+src/atcoder/__init__.py
+src/atcoder/cli.py
 src/atcoder_client_tools.egg-info/PKG-INFO
 src/atcoder_client_tools.egg-info/SOURCES.txt
 src/atcoder_client_tools.egg-info/dependency_links.txt
