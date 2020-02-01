@@ -1,1 +1,1 @@
-recursive-include atcoder/data *
+recursive-include src/atcoder/data *
