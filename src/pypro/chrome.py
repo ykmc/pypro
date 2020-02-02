@@ -18,7 +18,7 @@ class Chrome:
         # URLの組み立て
         base_url = "https://atcoder.jp/contests/" + contest + "/tasks/" + contest
         # ページを取得
-        for problem in "a": # "abcdef" になおす、あとでやる
+        for problem in "abcdef": # "abcdef" になおす、あとでやる
             url = base_url + "_" + problem
             self.driver.get(url)
             html = self.driver.page_source.encode('utf-8')
@@ -33,11 +33,15 @@ class Chrome:
                     contest_dir_path = self.data_dir_path / contest
                     if not contest_dir_path.exists():
                         contest_dir_path.mkdir()
+                    # 問題ディレクトリがなければ作成
+                    problem_dir_path = contest_dir_path / problem
+                    if not problem_dir_path.exists():
+                        problem_dir_path.mkdir()
                     
                     # サンプルケースのナンバリング
                     i_in += 1
                     filename = "in_" + str(i_in) + ".txt"
-                    file_path = contest_dir_path / filename
+                    file_path = contest_dir_path / problem / filename
                     
                     # サンプルケースの存在確認
                     if file_path.exists():
@@ -50,7 +54,7 @@ class Chrome:
                     # サンプルケースのナンバリング
                     i_out += 1
                     filename = "out_" + str(i_out) + ".txt"
-                    file_path = contest_dir_path / filename
+                    file_path = contest_dir_path / problem /  filename
 
                     # サンプルケースの存在確認
                     if file_path.exists():
