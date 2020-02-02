@@ -39,6 +39,12 @@ def test(filename):
         print(res.stdout.decode().rstrip('\n'))
         print("")
 
+@main.command()
+def x():
+    print(__file__)
+    data  = pkgutil.get_data("pypro", "config/sample.txt")
+    print(data)
+
 # pypa get xxx
 main.add_command(get)
 
