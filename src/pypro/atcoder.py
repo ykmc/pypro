@@ -35,8 +35,8 @@ def get(url_or_contest, problem):
 @atcoder.command()
 def init():
     print("init")
-    # ファイルが既にあるならエラー
-    # ない場合、作成する
+    # ファイルが既にあるならエラー, 上書きオプション指定されていれば無視する
+    # ファイルを作成する
 
 # --------------------------------
 # pp atcoder test ...
@@ -157,8 +157,12 @@ class AtCoder:
             if path.exists():
                 print("exists : " + str(path))
             else:
-                with path.open(mode='w') as f:
-                    f.write(data.string)
+                if data is None:
+                    with path.open(mode='w') as f:
+                        f.write("")
+                else:
+                    with path.open(mode='w') as f:
+                        f.write(data.string)
     
     def prepare_test(self, python_file):
         name = python_file.replace(".py","")
@@ -193,7 +197,6 @@ class AtCoder:
             print("[your answer]")
             print(res.stdout.decode().rstrip('\n'))
             print("")
-
 
 if __name__ == "__main__":
     atcoder()
