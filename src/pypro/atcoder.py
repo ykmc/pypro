@@ -56,11 +56,22 @@ def test(python_file):
 # pp atcoder git ...
 # --------------------------------
 @atcoder.command()
-def git():
-    print("git")
+@click.argument("python_file")
+def git(python_file):
+    atcoder = AtCoder()
+    # ファイルの存在確認
+    dir_path, file_name = atcoder.get_work_dir_path(python_file)
+    # コンテスト, 問題を取得する
+    contest, problem = file_name.split("_")[0],file_name.split("_")[1]
+    # ここでabcとarcの同時開催を処理し、contest = abcxxx_arcxxx のようにする
+
     # コンテスト日付を取得する
+    year,month,day = atcoder.get_contest_date(file_name)
     # 格納先ディレクトリがなければ作る
+    contest_dir = month + day + "_" + contest
+    atcoder.mkdir(atcoder.PYPRO_ATCODER_GIT_PATH / year, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir)
     # mv
+    print("mv", atcoder.PYPRO_ATCODER_WORK_PATH, atcoder.PYPRO_ATCODER_GIT_PATH)
     # git add filepath
     # git commit -m "xxx"
     # git push origin master
@@ -74,6 +85,11 @@ class AtCoder:
         self.options = Options()
         self.options.set_headless(True)
         self.driver = webdriver.Chrome(chrome_options=self.options)
+        self.PYPRO_HOME = os.environ["PYPRO_HOME"]
+        self.PYPRO_ATCODER_WORK_DIR = os.environ["PYPRO_ATCODER_WORK_DIR"]
+        self.PYPRO_ATCODER_GIT_DIR = os.environ["PYPRO_ATCODER_GIT_DIR"]
+        self.PYPRO_ATCODER_WORK_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_WORK_DIR / "atcoder"
+        self.PYPRO_ATCODER_GIT_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_GIT_DIR
     
     def is_url(self, string):
         if string[0:19] == "https://atcoder.jp/":
@@ -141,14 +157,16 @@ class AtCoder:
                 user_problem_list.append(p)
             return sorted(list(set(user_problem_list) & set(contest_problem_list)))
     
-    def mkdir(self, path, problems):
-        # コンテストディレクトリがなければ作成
-        if not path.exists():
-            path.mkdir()
-        # 問題ディレクトリがなければ作成
-        for p in problems:
-            if not (path / p).exists():
-                (path / p).mkdir()
+    def mkdir(self, parent, children):
+        # 親ディレクトリがなければ作成
+        if not parent.exists():
+            parent.mkdir()
+        # 子ディレクトリがなければ作成
+        if type(children) is not list:
+            children = [children]
+        for child in children:
+            if not (parent / child).exists():
+                (parent / child).mkdir()
 
     def save(self, data):
         for d in data:
@@ -156,7 +174,9 @@ class AtCoder:
             # 既に存在したらスキップ
             if path.exists():
                 print("exists : " + str(path))
+            # 存在しなければ保存する
             else:
+                # データがない場合は空ファイルを作成する
                 if data is None:
                     with path.open(mode='w') as f:
                         f.write("")
@@ -169,7 +189,7 @@ class AtCoder:
         contest = name.split("_")[0]
         problem = name.split("_")[1]
         commands = ["python"]
-        commands.append(name + ".py")
+        commands.append(self.PYPRO_ATCODER_WORK_PATH / (name + ".py"))
         return (contest,problem,commands)
     
     def get_testcase_files(self, contest, problem):
@@ -197,6 +217,30 @@ class AtCoder:
             print("[your answer]")
             print(res.stdout.decode().rstrip('\n'))
             print("")
+    
+    def get_work_dir_path(self, python_file):
+        path = self.PYPRO_ATCODER_WORK_PATH / python_file
+        if path.exists():
+            return (path.parent, path.name)
+        else:
+            raise Exception
+    
+    def get_contest_date(self, file_name):
+        # url
+        name = file_name.replace(".py","")
+        contest = name.split("_")[0]
+        problem = name.split("_")[1]
+        url = self.get_atcoder_url(contest)
+        # 開催日時を取得
+        self.driver.get(str(url))
+        soup = BeautifulSoup(self.driver.page_source.encode('utf-8'), "html.parser")
+        html = soup.find("time").text
+        year  = html[0:4] 
+        month = html[5:7]
+        day   = html[8:10]
+        return (year,month,day)
+        
+
 
 if __name__ == "__main__":
     atcoder()
