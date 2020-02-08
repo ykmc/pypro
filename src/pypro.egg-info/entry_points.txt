@@ -1,3 +1,4 @@
 [console_scripts]
-pypa = pypro.atcoder:main
+pp = pypro.cli:main
+pypa = pypro.atcoder2:main
 
