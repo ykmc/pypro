@@ -16,5 +16,9 @@ def init():
 def test():
     print("test")
 
+@atcoder.command()
+def git():
+    print("git")
+
 if __name__ == "__main__":
     atcoder()
