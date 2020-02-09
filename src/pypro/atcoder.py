@@ -131,7 +131,8 @@ class AtCoder:
                 self.driver.get(str(problem_url))
             
             soup = BeautifulSoup(self.driver.page_source.encode('utf-8'), "html.parser")
-            div = soup.find_all("div", class_="part")
+            #div = soup.find_all("div", class_="part")
+            div = soup.find_all("section")
 
             i_in, i_out = 0,0
             for d in div:
