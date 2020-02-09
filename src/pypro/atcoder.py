@@ -240,6 +240,8 @@ class AtCoder:
         day   = html[8:10]
         return (year,month,day)
         
+    def exec_git(self):
+        print("git xxx をやっていく")
 
 
 if __name__ == "__main__":
