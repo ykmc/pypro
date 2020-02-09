@@ -24,9 +24,15 @@ release は v0.0.0的なやつ
 
 環境変数の設定
 ```sh
-# init時にファイルを出力するディレクトリ
-export PPYPRO_WORK_DIR_PATH=/Users/ykmc/src/github.com/ykmc/contest/pypro/work
-# init時に利用するテンプレートがあるディレクトリ
-export PYPRO_ATCODER_TEMPLATE_DIR_PATH=/Users/ykmc/src/github.com/ykmc/contest/pypro/template-atcoder
-```
+# 絶対パスを設定する
+export PYPRO_HOME=/Users/ykmc/src/github.com/ykmc/contest
 
+# 以下、PYPRO_HOMEからの相対パスを設定する
+
+# commit前のソースコードファイルをおく場所
+export PYPRO_ATCODER_WORK_DIR=work
+# atcoderの提出コードを保管するディレクトリ
+export PYPRO_ATCODER_GIT_DIR=atcoder
+# atcoderのpythonテンプレート
+export PYPRO_ATCODER_TEMPLATE_DIR=template/atcoder
+```
