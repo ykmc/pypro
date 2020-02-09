@@ -1,4 +1,0 @@
-2 3
-12211 abcaaaaabcabc
-2121 aaabcaaabc
-222221 aaaaaaaaaaabc

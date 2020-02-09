@@ -90,6 +90,9 @@ class AtCoder:
         self.PYPRO_ATCODER_GIT_DIR = os.environ["PYPRO_ATCODER_GIT_DIR"]
         self.PYPRO_ATCODER_WORK_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_WORK_DIR / "atcoder"
         self.PYPRO_ATCODER_GIT_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_GIT_DIR
+
+    def __del__(self):
+        self.driver.quit()
     
     def is_url(self, string):
         if string[0:19] == "https://atcoder.jp/":
@@ -122,21 +125,26 @@ class AtCoder:
         for problem in target_problem_list:
             problem_url = url / (contest + "_" + problem)
             self.driver.get(str(problem_url))
+            if self.driver.title[0:3] == "404":
+                num = ord(problem)-ord("a")+1
+                problem_url = url / (contest + "_" + str(num))
+                self.driver.get(str(problem_url))
+            
             soup = BeautifulSoup(self.driver.page_source.encode('utf-8'), "html.parser")
             div = soup.find_all("div", class_="part")
 
             i_in, i_out = 0,0
             for d in div:
-                if (d.find("h3").text)[:3] == "入力例":
+                if d.find("h3") is not None and (d.find("h3").text)[:3] == "入力例":
                     i_in += 1
                     file_name = "in_" + str(i_in) + ".txt"
                     file_path = contest_dir_path / problem / file_name
                     res.append({"path":file_path, "data":d.find("pre").string})
-                if (d.find("h3").text)[:3] == "出力例":
+                if d.find("h3") is not None and (d.find("h3").text)[:3] == "出力例":
                     i_out += 1
                     file_name = "out_" + str(i_out) + ".txt"
                     file_path = contest_dir_path / problem / file_name
-                    res.append({"path":file_path, "data":d.find("pre").string})            
+                    res.append({"path":file_path, "data":d.find("pre").string})
         return res
 
     def get_problem_list(self, url):
