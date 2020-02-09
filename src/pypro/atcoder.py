@@ -78,6 +78,22 @@ def git(python_file):
 
 # ----------------------------------------------------------------
 
+CONTEST_FIND_BY_SECTION = ["abc034","abc036","abc041"]
+CONTEST_ABC_TO_ARC = {
+    "abc042":"arc058", 
+    "abc043":"arc059", 
+    "abc044":"arc060", 
+    "abc045":"arc061", 
+    "abc046":"arc062", 
+    "abc047":"arc063", 
+    "abc048":"arc064", 
+    "abc049":"arc065", 
+    "abc050":"arc066"
+}
+PROBLEM_ABC_TO_ABC = {"c":"a", "d":"b"}
+
+# ----------------------------------------------------------------
+
 class AtCoder:
 
     def __init__(self):
@@ -122,8 +138,14 @@ class AtCoder:
         
         # 問題のテストケースを取得
         res = []
+        case_count = []
         for problem in target_problem_list:
-            problem_url = url / (contest + "_" + problem)
+            problem_url = ""
+            if problem in ["c","d"] and contest in CONTEST_ABC_TO_ARC.keys():
+                problem_url = url / (CONTEST_ABC_TO_ARC[contest] + "_" + PROBLEM_ABC_TO_ABC[problem])
+            else:
+                problem_url = url / (contest + "_" + problem)
+
             self.driver.get(str(problem_url))
             if self.driver.title[0:3] == "404":
                 num = ord(problem)-ord("a")+1
@@ -131,8 +153,12 @@ class AtCoder:
                 self.driver.get(str(problem_url))
             
             soup = BeautifulSoup(self.driver.page_source.encode('utf-8'), "html.parser")
-            #div = soup.find_all("div", class_="part")
-            div = soup.find_all("section")
+
+            div = ""
+            if contest in CONTEST_FIND_BY_SECTION:
+                div = soup.find_all("section")
+            else:
+                div = soup.find_all("div", class_="part")
 
             i_in, i_out = 0,0
             for d in div:
@@ -146,6 +172,8 @@ class AtCoder:
                     file_name = "out_" + str(i_out) + ".txt"
                     file_path = contest_dir_path / problem / file_name
                     res.append({"path":file_path, "data":d.find("pre").string})
+            case_count.append(i_in+i_out)
+        print(case_count)
         return res
 
     def get_problem_list(self, url):
