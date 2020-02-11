@@ -1,6 +1,8 @@
 import click
 from pypro.atcoder import atcoder
 
+# ----------------------------------------------------------------
+
 @click.group()
 def main():
     pass
@@ -9,6 +11,8 @@ def main():
 # pp atcoder xxx
 # --------------------------------
 main.add_command(atcoder)
+
+# ----------------------------------------------------------------
 
 if __name__ == "__main__":
     main()

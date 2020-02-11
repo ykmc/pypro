@@ -63,18 +63,27 @@ def git(python_file):
     dir_path, file_name = atcoder.get_work_dir_path(python_file)
     # コンテスト, 問題を取得する
     contest, problem = file_name.split("_")[0],file_name.split("_")[1]
-    # ここでabcとarcの同時開催を処理し、contest = abcxxx_arcxxx のようにする
-
+    # abcとarcの同時開催の対応, abc=>arcは対応しているが、arc=>abcは未対応
+    git_contest_dir_name = contest
+    if contest in CONTEST_ABC_TO_ARC.keys():
+        git_contest_dir_name = contest + "_" + CONTEST_ABC_TO_ARC[contest]
+    
     # コンテスト日付を取得する
     year,month,day = atcoder.get_contest_date(file_name)
     # 格納先ディレクトリがなければ作る
-    contest_dir = month + day + "_" + contest
+    contest_dir = month + day + "_" + git_contest_dir_name
     atcoder.mkdir(atcoder.PYPRO_ATCODER_GIT_PATH / year, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir)
     # mv
-    print("mv", atcoder.PYPRO_ATCODER_WORK_PATH, atcoder.PYPRO_ATCODER_GIT_PATH)
+    cmd1 = ["mv", atcoder.PYPRO_ATCODER_WORK_PATH / python_file, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir]
+    res = subprocess.run(cmd1)
     # git add filepath
+    cmd2 = ["git", "add", atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir / python_file]
+    res = subprocess.run(cmd2)
     # git commit -m "xxx"
-    # git push origin master
+    print(
+        "git", "commit", "-m",
+        '"Accepted: abc042_d.py)"'
+    )
 
 # ----------------------------------------------------------------
 
