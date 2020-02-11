@@ -3,6 +3,7 @@ import sys
 import os
 import subprocess
 import pkgutil
+import datetime
 from pathlib import Path
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -70,15 +71,19 @@ def git(python_file):
     
     # コンテスト日付を取得する
     year,month,day = atcoder.get_contest_date(file_name)
+    # ファイルの更新日付を取得
+    ctime = Path(atcoder.PYPRO_ATCODER_WORK_PATH / python_file).stat().st_ctime
+    d = datetime.datetime.fromtimestamp(ctime)
+    print(d.year, d.month, d.day, d.hour, d.minute, d.second, d)
     # 格納先ディレクトリがなければ作る
     contest_dir = month + day + "_" + git_contest_dir_name
     atcoder.mkdir(atcoder.PYPRO_ATCODER_GIT_PATH / year, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir)
     # mv
     cmd1 = ["mv", atcoder.PYPRO_ATCODER_WORK_PATH / python_file, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir]
-    res = subprocess.run(cmd1)
+    #res = subprocess.run(cmd1)
     # git add filepath
     cmd2 = ["git", "add", atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir / python_file]
-    res = subprocess.run(cmd2)
+    #res = subprocess.run(cmd2)
     # git commit -m "xxx"
     print(
         "git", "commit", "-m",
