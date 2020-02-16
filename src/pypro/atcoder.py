@@ -29,6 +29,8 @@ def get(url_or_contest, problem):
     data = atcoder.get(Path(url), problem)
     # テストケースを格納
     atcoder.save(data)
+    # 終了処理
+    atcoder.close()
 
 # --------------------------------
 # pp atcoder init ...
@@ -52,6 +54,8 @@ def test(python_file):
     testcase_list = atcoder.get_testcase_files(contest, problem)
     # テスト実行
     atcoder.exec_test(testcase_list, contest, problem, commands)
+    # 終了処理
+    atcoder.close()
 
 # --------------------------------
 # pp atcoder git ...
@@ -79,7 +83,10 @@ def git(python_file):
     contest_dir = month + day + "_" + git_contest_dir_name
     atcoder.mkdir(atcoder.PYPRO_ATCODER_GIT_PATH / year, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir)
     # mv
-    cmd1 = ["mv", atcoder.PYPRO_ATCODER_WORK_PATH / python_file, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir]
+    # ファイルが存在したら・・・対策を行いたい
+    arg_from = atcoder.PYPRO_ATCODER_WORK_PATH / python_file
+    arg_to = atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir
+    cmd1 = ["mv", arg_from, arg_to]
     #res = subprocess.run(cmd1)
     # git add filepath
     cmd2 = ["git", "add", atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir / python_file]
@@ -89,6 +96,8 @@ def git(python_file):
         "git", "commit", "-m",
         '"Accepted: abc042_d.py)"'
     )
+    # 終了処理
+    atcoder.close()
 
 # ----------------------------------------------------------------
 
@@ -157,8 +166,8 @@ class AtCoder:
         self.PYPRO_ATCODER_GIT_DIR = os.environ["PYPRO_ATCODER_GIT_DIR"]
         self.PYPRO_ATCODER_WORK_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_WORK_DIR / "atcoder"
         self.PYPRO_ATCODER_GIT_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_GIT_DIR
-
-    def __del__(self):
+    
+    def close(self):
         self.driver.quit()
     
     def is_url(self, string):
