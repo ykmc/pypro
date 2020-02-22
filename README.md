@@ -29,10 +29,10 @@ export PYPRO_HOME=/Users/ykmc/src/github.com/ykmc/contest
 
 # 以下、PYPRO_HOMEからの相対パスを設定する
 
-# commit前のソースコードファイルをおく場所
+# initに使うテンプレートを格納するディレクトリ
+export PYPRO_ATCODER_TEMPLATE_DIR=template
+# commit前のソースコードファイルを格納するディレクトリ
 export PYPRO_ATCODER_WORK_DIR=work
-# atcoderの提出コードを保管するディレクトリ
-export PYPRO_ATCODER_GIT_DIR=atcoder
-# atcoderのpythonテンプレート
-export PYPRO_ATCODER_TEMPLATE_DIR=template/atcoder
+# atcoder用のディレクトリ
+export PYPRO_ATCODER_DIR=atcoder
 ```
