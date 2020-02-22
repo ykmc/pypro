@@ -38,6 +38,7 @@ def get(url_or_contest, problem):
 @atcoder.command()
 def init():
     print("init")
+    # パス
     # ファイルが既にあるならエラー, 上書きオプション指定されていれば無視する
     # ファイルを作成する
 
@@ -161,11 +162,15 @@ class AtCoder:
         self.options = Options()
         self.options.set_headless(True)
         self.driver = webdriver.Chrome(chrome_options=self.options)
+        # environment vars
         self.PYPRO_HOME = os.environ["PYPRO_HOME"]
-        self.PYPRO_ATCODER_WORK_DIR = os.environ["PYPRO_ATCODER_WORK_DIR"]
-        self.PYPRO_ATCODER_GIT_DIR = os.environ["PYPRO_ATCODER_GIT_DIR"]
-        self.PYPRO_ATCODER_WORK_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_WORK_DIR / "atcoder"
-        self.PYPRO_ATCODER_GIT_PATH = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_GIT_DIR
+        self.PYPRO_WORK_DIR = os.environ["PYPRO_WORK_DIR"]
+        self.PYPRO_TEMPLATE_DIR = os.environ["PYPRO_TEMPLATE_DIR"]
+        self.PYPRO_ATCODER_DIR = os.environ["PYPRO_ATCODER_DIR"]
+        # path
+        self.PYPRO_ATCODER_TEMPLATE_PATH = Path(self.PYPRO_HOME) / self.PYPRO_TEMPLATE_DIR / self.PYPRO_ATCODER_DIR
+        self.PYPRO_ATCODER_WORK_PATH     = Path(self.PYPRO_HOME) / self.PYPRO_WORK_DIR     / self.PYPRO_ATCODER_DIR
+        self.PYPRO_ATCODER_GIT_PATH      = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_DIR
     
     def close(self):
         self.driver.quit()
