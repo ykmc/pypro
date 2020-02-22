@@ -36,11 +36,17 @@ def get(url_or_contest, problem):
 # pp atcoder init ...
 # --------------------------------
 @atcoder.command()
-def init():
-    print("init")
-    # パス
-    # ファイルが既にあるならエラー, 上書きオプション指定されていれば無視する
+@click.argument("contest")
+def init(contest):
+    atcoder = AtCoder()
+    # 作成するファイルの一覧
+    files = atcoder.get_contest_problems(contest)
     # ファイルを作成する
+    for f in files:
+        cmd = ["cp", str(atcoder.PYPRO_ATCODER_TEMPLATE_PATH / "default.py"), str(atcoder.PYPRO_ATCODER_WORK_PATH / f)]
+        res = subprocess.run(cmd)
+    # 終了処理
+    atcoder.close()
 
 # --------------------------------
 # pp atcoder test ...
@@ -158,7 +164,6 @@ PROBLEM_ABC_TO_ABC = {"c":"a", "d":"b"}
 class AtCoder:
 
     def __init__(self):
-        self.data_dir_path = Path(__file__).parent / "data"
         self.options = Options()
         self.options.set_headless(True)
         self.driver = webdriver.Chrome(chrome_options=self.options)
@@ -168,6 +173,7 @@ class AtCoder:
         self.PYPRO_TEMPLATE_DIR = os.environ["PYPRO_TEMPLATE_DIR"]
         self.PYPRO_ATCODER_DIR = os.environ["PYPRO_ATCODER_DIR"]
         # path
+        self.DATA_DIR_PATH               = Path(__file__).parent / "data"
         self.PYPRO_ATCODER_TEMPLATE_PATH = Path(self.PYPRO_HOME) / self.PYPRO_TEMPLATE_DIR / self.PYPRO_ATCODER_DIR
         self.PYPRO_ATCODER_WORK_PATH     = Path(self.PYPRO_HOME) / self.PYPRO_WORK_DIR     / self.PYPRO_ATCODER_DIR
         self.PYPRO_ATCODER_GIT_PATH      = Path(self.PYPRO_HOME) / self.PYPRO_ATCODER_DIR
@@ -189,7 +195,7 @@ class AtCoder:
 
     def get(self, url, problems):
         contest = str(url).split("/")[-1]
-        contest_dir_path = self.data_dir_path / contest
+        contest_dir_path = self.DATA_DIR_PATH / contest
         url = url / "tasks"
 
         # 指定コンテストの問題一覧を取得
@@ -295,8 +301,17 @@ class AtCoder:
         return (contest,problem,commands)
     
     def get_testcase_files(self, contest, problem):
-        test_case_dir_path = self.data_dir_path / contest / problem
+        test_case_dir_path = self.DATA_DIR_PATH / contest / problem
         return sorted(test_case_dir_path.glob("in_*.txt"))
+    
+    def get_contest_problems(self, contest):
+        contest_dir_path = self.DATA_DIR_PATH / contest 
+        path_list = sorted(contest_dir_path.glob("*"))
+        res = []
+        for path in path_list:
+            res.append(path.parent.name + "_" + path.name + ".py")
+        return res
+
     
     def exec_test(self, testcase_list, contest, problem, commands):
         # ケースがローカルにない場合
