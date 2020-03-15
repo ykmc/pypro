@@ -69,12 +69,13 @@ def test(python_file):
 # --------------------------------
 @atcoder.command()
 @click.argument("python_file")
-def git(python_file):
+@click.option('--status', '-s', default="AC", help="judge status. AC(default), WA, RE, CE, TLE, MLE, OLE")
+def git(python_file, status):
     atcoder = AtCoder()
     # ファイルの存在確認
     dir_path, file_name = atcoder.get_work_dir_path(python_file)
     # コンテスト, 問題を取得する
-    contest, problem = file_name.split("_")[0],file_name.split("_")[1]
+    contest, problem = file_name.split("_")[0],file_name.split("_")[1].split(".")[0]
     # abcとarcの同時開催の対応, abc=>arcは対応しているが、arc=>abcは未対応
     git_contest_dir_name = contest
     if contest in CONTEST_ABC_TO_ARC.keys():
@@ -86,28 +87,40 @@ def git(python_file):
     ctime = Path(atcoder.PYPRO_ATCODER_WORK_PATH / python_file).stat().st_ctime
     d = datetime.datetime.fromtimestamp(ctime)
     print(d.year, d.month, d.day, d.hour, d.minute, d.second, d)
+    # 出力ファイル名
+    output_timestamp = str(d.year) + "{:02d}".format(d.month) + "{:02d}".format(d.day)
+    output_file = "_".join([output_timestamp, problem]) + ".py"
     # 格納先ディレクトリがなければ作る
     contest_dir = month + day + "_" + git_contest_dir_name
     atcoder.mkdir(atcoder.PYPRO_ATCODER_GIT_PATH / year, atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir)
     # mv
     # ファイルが存在したら・・・対策を行いたい
     arg_from = atcoder.PYPRO_ATCODER_WORK_PATH / python_file
-    arg_to = atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir
-    cmd1 = ["mv", arg_from, arg_to]
+    arg_to = atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir / output_file
+    cmd1 = ["mv", str(arg_from), str(arg_to)]
     #res = subprocess.run(cmd1)
     # git add filepath
-    cmd2 = ["git", "add", atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir / python_file]
+    cmd2 = ["git", "add", str(atcoder.PYPRO_ATCODER_GIT_PATH / year / contest_dir / output_file)]
     #res = subprocess.run(cmd2)
-    # git commit -m "xxx"
-    print(
-        "git", "commit", "-m",
-        '"Accepted: abc042_d.py)"'
-    )
+    commit_message = "{}: {}/{}".format(STATUS[status], contest, problem)
+    cmd3 = ["git", "commit", "-m", '"' + commit_message + '"']
+    # 処理が安定するまではコマンドは手動で実行しましょう
+    print(" ".join(cmd1))
+    print(" ".join(cmd2))
+    print(" ".join(cmd3))
     # 終了処理
     atcoder.close()
 
 # ----------------------------------------------------------------
-
+STATUS = {
+    "AC": "Accepted",
+    "WA": "Wrong Answer",
+    "RE": "Runtime Error",
+    "CE": "Compilation Error",
+    "TLE": "Time Limit Exceeded",
+    "MLE": "Memory Limit Exceeded",
+    "OLE": "Output Limit Exceeded"
+}
 CONTEST_FIND_BY_SECTION = ["abc034","abc036","abc041"]
 CONTEST_ABC_TO_ARC = {
     "abc042":"arc058", 
